@@ -1,0 +1,20 @@
+---
+
+- name : "Install Prerequisites" 
+  yum: 
+    state: present
+    pkg:   "{{ item }}"
+  with_items:
+      - java
+      - epel-release
+      - git
+      - wget
+      - zip
+      - unzip
+      - python-pip
+      - dos2unix
+      
+- name: "Install Python"
+  pip:
+    name: psycopg2
+   

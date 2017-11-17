@@ -1,0 +1,48 @@
+---
+
+- name: Check for Sonarqube exists in /opt     
+  stat: path=/opt/sonarqube
+  register: sonarqube
+
+- name: Download Sonarqube
+  unarchive:
+    src: "{{ sonar_version }}"
+    dest: /opt/
+    remote_src: yes
+  when: not sonarqube.stat.exists
+
+- name: Rename the folder
+  command: mv /opt/sonarqube-6.5 /opt/sonarqube
+  when: not sonarqube.stat.exists
+
+- name: Configure Sonarqube
+  lineinfile:
+    dest: /opt/sonarqube/conf/sonar.properties
+    line: "{{ item }}"
+  with_items:
+    - "sonar.jdbc.username={{ username }}"
+    - "sonar.jdbc.password={{ password }}"
+    - "sonar.jdbc.url=jdbc:postgresql://localhost/{{ db_name }}"
+  when: not sonarqube.stat.exists
+  
+- name: Copying config file
+  template:
+    src: sonar
+    dest: /etc/systemd/system/sonar.service
+    owner: root
+    group: root
+    mode: 0644
+  when: not sonarqube.stat.exists
+
+- name: Converting unix file
+  command: dos2unix /opt/sonarqube/conf/sonar.properties
+
+- name: Enabling the Service
+  systemd:
+    name: sonar
+    enabled: yes
+
+- name: Starting the Service
+  systemd:
+    name: sonar
+    state: restarted

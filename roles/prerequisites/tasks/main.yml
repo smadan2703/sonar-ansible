@@ -11,16 +11,15 @@
       - wget
       - zip
       - unzip
-      - python-pip
       - dos2unix
       
-- name: "Install Python"
-  get_url:
-    url: https://bootstrap.pypa.io/get-pip.py
-    dest: /tmp/get-pip.py
-    owner: root
-    group: root
-    mode: 0777
+#- name: "Install Python"
+#  get_url:
+#    url: https://bootstrap.pypa.io/get-pip.py
+#    dest: /tmp/get-pip.py
+#    owner: root
+#    group: root
+#    mode: 0777
  
-- name: Install PIP
-  command: python get-pip.py chdir = /tmp/
+#- name: Install PIP
+#  command: python get-pip.py chdir = /tmp/
